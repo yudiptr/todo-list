@@ -3,10 +3,14 @@ import './App.css';
 import React from 'react';
 
 function App() {
+    
     const [activity, setActivity] = React.useState('');
     const [todos, setTodos] = React.useState(([]));
     const [edit, setEdit] = React.useState({});
-
+    
+    React.useEffect(() => {
+      iterate();
+    }, [])
 
     function generateId(){
       return Date.now();
@@ -14,7 +18,7 @@ function App() {
 
     function addTodo(event){
       event.preventDefault();
-
+      
       if(edit.id){
         const update = {
           id : edit.id,
@@ -37,11 +41,10 @@ function App() {
 
       const newTemp = {
         id : generateId(),
-        activity, };
-      
-      setTodos([...todos,newTemp]);
-      localStorage.setItem(newTemp.id,JSON.stringify(newTemp))
+        activity };
 
+      localStorage.setItem(newTemp.id,JSON.stringify(newTemp))
+      iterate();
       setActivity('');
         
       
@@ -66,6 +69,19 @@ function App() {
     function cancelEdit(){
       setEdit({});
       setActivity("");
+    }
+
+    function iterate(){
+      const temp = [];
+      for (const key in localStorage) {
+        // Skip built-in properties like length, setItem, etc.
+        if (localStorage.hasOwnProperty(key)) {
+          temp.push(JSON.parse(localStorage.getItem(key)))
+          console.log(JSON.parse(localStorage.getItem(key)))
+          
+        }
+      }
+      setTodos(temp)
     }
 
   return (
